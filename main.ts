@@ -24,13 +24,18 @@ if (existsSync(join(here, 'screenshots'))) {
   cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
 }
 
+// The caps mirror the scorer's own gates: at most 4 screenshots of at most
+// 256 KiB each, at most 993 files / 48 MiB under game/, no game/ path longer
+// than 1000 bytes; text_max_bytes shapes the dossier text budget.
+const ENTRY_CAPS = {
+  text_max_bytes: 163840,
+  screenshots: { max: 4, max_bytes: 262144 },
+  game_max_files: 993,
+  game_max_bytes: 50331648,
+  game_path_max_bytes: 1000,
+};
+
 writeFileSync(
   join(out, 'dossier.json'),
-  buildDossier(out, {
-    text_max_bytes: 163840,
-    screenshots: { max: 4, max_bytes: 262144 },
-    game_max_files: 993,
-    game_max_bytes: 50331648,
-    game_path_max_bytes: 1000,
-  }),
+  buildDossier(out, ENTRY_CAPS),
 );
